@@ -6,6 +6,8 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet weak private var counterLabel: UILabel!
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var questionLabel: UILabel!
+    @IBOutlet weak private var yesButton: UIButton!
+    @IBOutlet weak private var noButton: UIButton!
     
     // MARK: - Struct
     struct QuizStepViewModel {
@@ -29,36 +31,47 @@ final class MovieQuizViewController: UIViewController {
     // MARK: - Private property
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
-    private var questions: [QuizQuestion] = [QuizQuestion(image: "The Godfather",
-                                                          question: "Рейтинг этого фильма больше чем 6?",
-                                                          correctAnswer: true),
-                                             QuizQuestion(image: "The Dark Knight",
-                                                          question: "Рейтинг этого фильма больше чем 6?",
-                                                          correctAnswer: true),
-                                             QuizQuestion(image: "Kill Bill",
-                                                          question: "Рейтинг этого фильма больше чем 6?",
-                                                          correctAnswer: true),
-                                             QuizQuestion(image: "The Avengers",
-                                                          question: "Рейтинг этого фильма больше чем 6?",
-                                                          correctAnswer: true),
-                                             QuizQuestion(image: "Deadpool",
-                                                          question: "Рейтинг этого фильма больше чем 6?",
-                                                          correctAnswer: true),
-                                             QuizQuestion(image: "The Green Knight",
-                                                          question: "Рейтинг этого фильма больше чем 6?",
-                                                          correctAnswer: true),
-                                             QuizQuestion(image: "Old",
-                                                          question: "Рейтинг этого фильма больше чем 6?",
-                                                          correctAnswer: false),
-                                             QuizQuestion(image: "The Ice Age Adventures of Buck Wild",
-                                                          question: "Рейтинг этого фильма больше чем 6?",
-                                                          correctAnswer: false),
-                                             QuizQuestion(image: "Tesla",
-                                                          question: "Рейтинг этого фильма больше чем 6?",
-                                                          correctAnswer: false),
-                                             QuizQuestion(image: "Vivarium",
-                                                          question: "Рейтинг этого фильма больше чем 6?",
-                                                          correctAnswer: false)
+    private var questions: [QuizQuestion] = [
+        QuizQuestion(
+            image: "The Godfather",
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true),
+        QuizQuestion(
+            image: "The Dark Knight",
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true),
+        QuizQuestion(
+            image: "Kill Bill",
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true),
+        QuizQuestion(
+            image: "The Avengers",
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true),
+        QuizQuestion(
+            image: "Deadpool",
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true),
+        QuizQuestion(
+            image: "The Green Knight",
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true),
+        QuizQuestion(
+            image: "Old",
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: false),
+        QuizQuestion(
+            image: "The Ice Age Adventures of Buck Wild",
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: false),
+        QuizQuestion(
+            image: "Tesla",
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: false),
+        QuizQuestion(
+            image: "Vivarium",
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: false)
     ]
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -96,6 +109,7 @@ final class MovieQuizViewController: UIViewController {
     private func showAnswerResult(isCorrect: Bool) {
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
+        imageView.layer.cornerRadius = 20
         
         if isCorrect {
             imageView.layer.borderColor = UIColor.ypGreen.cgColor
@@ -105,6 +119,9 @@ final class MovieQuizViewController: UIViewController {
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.imageView.layer.borderColor = UIColor.clear.cgColor
+            self.yesButton.isEnabled = true
+            self.noButton.isEnabled = true
             self.showNextQuesionResults()
         }
     }
@@ -141,12 +158,14 @@ final class MovieQuizViewController: UIViewController {
     
     // MARK: - IBActions
     @IBAction private func noButtonTapped(_ sender: UIButton) {
+        sender.isEnabled.toggle()
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = false
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
     @IBAction private func yesButtonTapped(_ sender: UIButton) {
+        sender.isEnabled.toggle()
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = true
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
