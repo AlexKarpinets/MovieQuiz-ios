@@ -93,7 +93,8 @@ final class MovieQuizViewController: UIViewController {
                                       preferredStyle: .alert)
         
         let action = UIAlertAction(title: result.buttonText,
-                                   style: .default) { _ in
+                                   style: .default) { [weak self] _ in
+            guard let self = self else {return}
             self.reset()
         }
         
@@ -115,7 +116,8 @@ final class MovieQuizViewController: UIViewController {
             imageView.layer.borderColor = UIColor.ypRed.cgColor
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else {return}
             self.imageView.layer.borderColor = UIColor.clear.cgColor
             self.yesButton.isEnabled = true
             self.noButton.isEnabled = true
