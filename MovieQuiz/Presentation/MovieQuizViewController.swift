@@ -8,10 +8,13 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet weak private var questionLabel: UILabel!
     @IBOutlet weak private var yesButton: UIButton!
     @IBOutlet weak private var noButton: UIButton!
-
+    
     // MARK: - Private property
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
+    private let questionsAmount = 10
+    private let questionFactory: QuestionFactoryProtocol = QuestionFactory()
+    private var currentQuestion: QuizQuestion?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -44,7 +47,7 @@ final class MovieQuizViewController: UIViewController {
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         QuizStepViewModel(image: UIImage(named: model.image) ?? UIImage(),
                           question: model.question,
-                          questionNumber: "\(currentQuestionIndex + 1)/\(questions.count)")
+                          questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
     }
     
     private func showAnswerResult(isCorrect: Bool) {
@@ -65,7 +68,7 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showNextQuesionResults() {
-        if currentQuestionIndex == questions.count - 1 {
+        if currentQuestionIndex == questionsAmount - 1 {
             let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
                 text: "Ваш результат: \(correctAnswers) из 10",
@@ -73,9 +76,11 @@ final class MovieQuizViewController: UIViewController {
             show(quiz: viewModel)
         } else {
             currentQuestionIndex += 1
-            let nextQuestion = questions[currentQuestionIndex]
-            let viewModel = convert(model: nextQuestion)
-            show(quiz: viewModel)
+            if let nextQuestion = questionFactory.requestNextQuestion() {
+                currentQuestion = nextQuestion
+                let viewModel = convert(model: nextQuestion)
+                show(quiz: viewModel)
+            }
         }
     }
     
@@ -83,31 +88,39 @@ final class MovieQuizViewController: UIViewController {
         currentQuestionIndex = 0
         correctAnswers = 0
         
-        let firstQuestion = questions[currentQuestionIndex]
-        let viewModel = convert(model: firstQuestion)
-        show(quiz: viewModel)
+        if let firstQuestion = questionFactory.requestNextQuestion() {
+            currentQuestion = firstQuestion
+            let viewModel = convert(model: firstQuestion)
+            show(quiz: viewModel)
+        }
     }
     
     private func setup() {
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
         imageView.layer.cornerRadius = 20
-        let currentQuestion = questions[currentQuestionIndex]
-        let viewModel = convert(model: currentQuestion)
-        show(quiz: viewModel)
+        if let firstQuestion = questionFactory.requestNextQuestion() {
+            currentQuestion = firstQuestion
+            let viewModel = convert(model: firstQuestion)
+            show(quiz: viewModel)
+        }
     }
     
     // MARK: - IBActions
     @IBAction private func noButtonTapped(_ sender: UIButton) {
         sender.isEnabled.toggle()
-        let currentQuestion = questions[currentQuestionIndex]
+        guard let currentQuestion = currentQuestion else {
+            return
+        }
         let givenAnswer = false
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
     @IBAction private func yesButtonTapped(_ sender: UIButton) {
         sender.isEnabled.toggle()
-        let currentQuestion = questions[currentQuestionIndex]
+        guard let currentQuestion = currentQuestion else {
+            return
+        }
         let givenAnswer = true
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
