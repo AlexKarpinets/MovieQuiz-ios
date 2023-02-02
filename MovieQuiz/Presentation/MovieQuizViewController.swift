@@ -16,6 +16,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private let questionsAmount = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
+    private var alert = AlertPresenter()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -44,21 +45,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         counterLabel.text = step.questionNumber
     }
     
-    private func show(quiz result: QuizResultsViewModel) {
-        let alert = UIAlertController(title: result.title,
-                                      message: result.text,
-                                      preferredStyle: .alert)
-        
-        let action = UIAlertAction(title: result.buttonText,
-                                   style: .default) { [weak self] _ in
-            guard let self = self else {return}
-            self.reset()
-        }
-        
-        alert.addAction(action)
-        present(alert, animated: true)
-    }
-    
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         QuizStepViewModel(image: UIImage(named: model.image) ?? UIImage(),
                           question: model.question,
@@ -84,11 +70,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuesionResults() {
         if currentQuestionIndex == questionsAmount - 1 {
-            let viewModel = QuizResultsViewModel(
-                title: "Этот раунд окончен!",
-                text: "Ваш результат: \(correctAnswers) из 10",
-                buttonText: "Сыграть ещё раз")
-            show(quiz: viewModel)
+            alert.showAlert(
+                in: self, with: AlertModel(
+                    title: "Этот раунд окончен!",
+                    message: "Ваш результат: \(correctAnswers) из 10",
+                    buttonText: "Сыграть ещё раз", completion: { _ in
+                        self.reset()
+                    }))
         } else {
             currentQuestionIndex += 1
             questionFactory?.requestNextQuestion()
