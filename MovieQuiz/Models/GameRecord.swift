@@ -12,11 +12,8 @@ struct GameRecord: Codable, Comparable {
     let correct: Int
     let total: Int
     let date: Date
-
-//    static func < (lhs: GameRecord, rhs: GameRecord) -> Bool {
-//        if lhs.correct < rhs.total {
-//            return true
-//        }
-//        return true
-//        }
+    
+    static func < (lhs: GameRecord, rhs: GameRecord) -> Bool {
+        lhs.correct == rhs.correct
     }
+}
