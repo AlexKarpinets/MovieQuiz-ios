@@ -19,8 +19,25 @@ final class StatisticServiceImplementation: StatisticService {
         case correct, total, bestGame, gamesCount
     }
     private let userDefaults = UserDefaults.standard
-    var totalAccuracy: Double = 0.0
-    var gamesCount: Int = 0
+    
+    var totalAccuracy: Double {
+        get {
+            
+        }
+        set {
+            
+        }
+    }
+    
+    var gamesCount: Int {
+        get {
+            
+        }
+        set {
+            
+        }
+    }
+    
     var bestGame: GameRecord {
         get {
             guard let data = userDefaults.data(forKey: Keys.bestGame.rawValue),
@@ -37,6 +54,7 @@ final class StatisticServiceImplementation: StatisticService {
             userDefaults.set(data, forKey: Keys.bestGame.rawValue)
         }
     }
+    
     func store(correct count: Int, total amount: Int) {
         <#code#>
     }
