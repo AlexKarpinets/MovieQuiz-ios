@@ -1,40 +1,51 @@
-//
-//  StatisticService.swift
-//  MovieQuiz
-//
-//  Created by Karpinets Alexander on 04.02.2023.
-//
-
 import Foundation
 
 protocol StatisticService {
-    func store(correct count: Int, total amount: Int)
     var totalAccuracy: Double {get}
     var gamesCount: Int {get}
     var bestGame: GameRecord {get}
+    func store(correct count: Int, total amount: Int)
 }
 
 final class StatisticServiceImplementation: StatisticService {
     private enum Keys: String {
         case correct, total, bestGame, gamesCount
     }
+    
     private let userDefaults = UserDefaults.standard
+    
+    private var correct: Double {
+        get {
+            userDefaults.double(forKey: Keys.correct.rawValue)
+        }
+        set {
+            userDefaults.set(newValue, forKey: Keys.correct.rawValue)
+        }
+    }
+    
+    private var total: Double {
+        get {
+            userDefaults.double(forKey: Keys.total.rawValue)
+        }
+        set {
+            userDefaults.set(newValue, forKey: Keys.total.rawValue)
+        }
+    }
     
     var totalAccuracy: Double {
         get {
-            
-        }
-        set {
-            
+            total == 0
+            ? 0
+            : correct / total * 100
         }
     }
     
     var gamesCount: Int {
         get {
-            
+            userDefaults.integer(forKey: Keys.gamesCount.rawValue)
         }
         set {
-            
+            userDefaults.set(newValue, forKey: Keys.gamesCount.rawValue)
         }
     }
     
@@ -56,9 +67,20 @@ final class StatisticServiceImplementation: StatisticService {
     }
     
     func store(correct count: Int, total amount: Int) {
-        <#code#>
+        gamesCount += 1
+        
+        let currentGame = GameRecord(
+            correct: count,
+            total: amount,
+            date: Date()
+        )
+        
+        if bestGame.correct < currentGame.correct {
+            bestGame = currentGame
+        }
+        
+        correct += Double(currentGame.correct)
+        total += Double(currentGame.total)
     }
-    
-    
 }
 

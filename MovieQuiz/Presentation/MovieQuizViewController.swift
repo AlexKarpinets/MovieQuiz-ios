@@ -16,14 +16,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private let questionsAmount = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
-    private var staticService: StatisticServiceImplementation?
+    private var statisticService: StatisticService?
     private var alert = AlertPresenter()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         questionFactory = QuestionFactory(delegate: self)
-        staticService = StatisticServiceImplementation()
+        statisticService = StatisticServiceImplementation()
         setup()
     }
     
@@ -72,10 +72,17 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuesionResults() {
         if currentQuestionIndex == questionsAmount - 1 {
+            guard let statisticService = statisticService else { return }
+            statisticService.store(correct: correctAnswers, total: questionsAmount)
             alert.showAlert(
                 in: self, with: AlertModel(
                     title: "Этот раунд окончен!",
-                    message: "Ваш результат: \(correctAnswers) из 10",
+                    message: """
+                                                                Ваш результат: \(correctAnswers) из \(questionsAmount)
+                                                                Количество сыгранных квизов: \(statisticService.gamesCount)
+                                                                Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) (\(statisticService.bestGame.date.dateTimeString))
+                                                                Средняя точность: \("\(String(format: "%.2f", statisticService.totalAccuracy))%")
+                                                                """,
                     buttonText: "Сыграть ещё раз", completion: { _ in
                         self.reset()
                     }))
