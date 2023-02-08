@@ -62,7 +62,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else {return}
+            guard let self else {return}
             self.imageView.layer.borderColor = UIColor.clear.cgColor
             self.yesButton.isEnabled = true
             self.noButton.isEnabled = true
@@ -72,7 +72,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuesionResults() {
         if currentQuestionIndex == questionsAmount - 1 {
-            guard let statisticService = statisticService else { return }
+            guard let statisticService else { return }
             statisticService.store(correct: correctAnswers, total: questionsAmount)
             alert.showAlert(
                 in: self, with: AlertModel(
@@ -83,8 +83,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                                                                 Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) (\(statisticService.bestGame.date.dateTimeString))
                                                                 Средняя точность: \("\(String(format: "%.2f", statisticService.totalAccuracy))%")
                                                                 """,
-                    buttonText: "Сыграть ещё раз", completion: { _ in
-                        self.reset()
+                    buttonText: "Сыграть ещё раз", completion: { [weak self] _ in
+                        self?.reset()
                     }))
         } else {
             currentQuestionIndex += 1
