@@ -9,6 +9,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet weak private var questionLabel: UILabel!
     @IBOutlet weak private var yesButton: UIButton!
     @IBOutlet weak private var noButton: UIButton!
+    @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     
     // MARK: - Private property
     private var currentQuestionIndex = 0
@@ -103,6 +104,24 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         imageView.layer.borderWidth = 8
         imageView.layer.cornerRadius = 20
         questionFactory?.requestNextQuestion()
+    }
+    
+    private func showLoadingIndicator() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+        
+        alert.showAlert(in: self, with: AlertModel(
+            title: "",
+            message: "Ошибка",
+            buttonText: "Попробовать еще раз",
+            completion: { [weak self] _ in
+                guard let self else { return }
+                self.reset()
+            }))
     }
     
     // MARK: - IBActions
