@@ -1,7 +1,7 @@
 import Foundation
 
 struct QuizQuestion {
-    let image: String
-    let question: String
+    let image: Data
+    let question = "Рейтинг этого фильма больше чем \(Int.random(in: 5...9))?"
     let correctAnswer: Bool
 }
