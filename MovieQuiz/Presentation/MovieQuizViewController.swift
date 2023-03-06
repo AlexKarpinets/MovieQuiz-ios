@@ -1,7 +1,7 @@
 import UIKit
 
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
-
+    
     // MARK: - IBOutlets
     @IBOutlet weak private var counterLabel: UILabel!
     @IBOutlet weak private var imageView: UIImageView!
@@ -11,9 +11,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     
     // MARK: - Private property
-    private var currentQuestionIndex = 0
     private var correctAnswers = 0
-    private let questionsAmount = 10
+    private let presenter = MovieQuizPresenter()
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var statisticService: StatisticService?
@@ -31,7 +30,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             return
         }
         currentQuestion = question
-        let viewModel = convert(model: question)
+        let viewModel = presenter.convert(model: question)
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
         }
@@ -55,13 +54,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         counterLabel.text = step.questionNumber
     }
     
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        QuizStepViewModel(
-            image: UIImage(data: model.image) ?? UIImage(),
-            question: model.question,
-            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
-    }
-    
     private func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
             imageView.layer.borderColor = UIColor.ypGreen.cgColor
@@ -80,14 +72,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     private func showNextQuesionResults() {
-        if currentQuestionIndex == questionsAmount - 1 {
+        if presenter.isLastQuestion() {
             guard let statisticService else { return }
-            statisticService.store(correct: correctAnswers, total: questionsAmount)
+            statisticService.store(correct: correctAnswers, total: presenter.questionsAmount)
             alert.showAlert(
                 in: self, with: AlertModel(
                     title: "Этот раунд окончен!",
                     message: """
-                                                                Ваш результат: \(correctAnswers) из \(questionsAmount)
+                                                                Ваш результат: \(correctAnswers) из \(presenter.questionsAmount)
                                                                 Количество сыгранных квизов: \(statisticService.gamesCount)
                                                                 Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) (\(statisticService.bestGame.date.dateTimeString))
                                                                 Средняя точность: \("\(String(format: "%.2f", statisticService.totalAccuracy))%")
@@ -96,13 +88,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                         self?.reset()
                     }))
         } else {
-            currentQuestionIndex += 1
+            presenter.switchToNextQuestion()
             questionFactory?.requestNextQuestion()
         }
     }
     
     private func reset() {
-        currentQuestionIndex = 0
+        presenter.resetQuestionIndex()
         correctAnswers = 0
         questionFactory?.requestNextQuestion()
     }
@@ -111,7 +103,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
         imageView.layer.cornerRadius = 20
-       showLoadingIndicator()
+        showLoadingIndicator()
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         statisticService = StatisticServiceImplementation()
         questionFactory?.loadData()
