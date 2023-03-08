@@ -3,10 +3,11 @@ import UIKit
 final class MovieQuizPresenter {
     let questionsAmount = 10
     private var currentQuestionIndex = 0
+    var currentQuestion: QuizQuestion?
+    weak var viewController: MovieQuizViewController?
     
     func convert(model: QuizQuestion) -> QuizStepViewModel {
-        
-        return QuizStepViewModel(
+        QuizStepViewModel(
             image: UIImage(data: model.image) ?? UIImage(),
             question: model.question,
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
@@ -24,4 +25,19 @@ final class MovieQuizPresenter {
         currentQuestionIndex += 1
     }
     
+    func yesButtonTapped(_ sender: UIButton) {
+        didAnswer(isYes: true)
+    }
+    
+    func noButtonTapped(_ sender: UIButton) {
+        didAnswer(isYes: false)
+    }
+    
+    private func didAnswer(isYes: Bool) {
+        guard let currentQuestion = currentQuestion else {
+            return
+        }
+        let givenAnswer = isYes
+        viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    }
 }
