@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     
     // MARK: - IBOutlets
     @IBOutlet weak private var counterLabel: UILabel!
@@ -21,8 +21,16 @@ final class MovieQuizViewController: UIViewController {
         presenter = MovieQuizPresenter(viewController: self)
     }
     
-    // MARK: - Private func
-     func show(quiz step: QuizStepViewModel) {
+    // MARK: - Func
+    
+    func setup() {
+        imageView.layer.masksToBounds = true
+        imageView.layer.borderWidth = 8
+        imageView.layer.cornerRadius = 20
+        showLoadingIndicator()
+    }
+    
+    func show(quiz step: QuizStepViewModel) {
         imageView.image = step.image
         questionLabel.text = step.question
         counterLabel.text = step.questionNumber
@@ -41,28 +49,26 @@ final class MovieQuizViewController: UIViewController {
             self.imageView.layer.borderColor = UIColor.clear.cgColor
             self.yesButton.isEnabled = true
             self.noButton.isEnabled = true
-            self.presenter.showNextQuestionResults()
+            self.presenter.proceedToNextQuestionOrResults()
         }
     }
-
-    private func setup() {
-        imageView.layer.masksToBounds = true
-        imageView.layer.borderWidth = 8
-        imageView.layer.cornerRadius = 20
-        showLoadingIndicator()
-    }
     
-     func showLoadingIndicator() {
+    //    func highlightImageBorder(isCorrectAnswer: Bool) {
+    //        imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+    //    }
+    
+    
+    func showLoadingIndicator() {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
     }
     
-     func hideLoadingIndicator() {
+    func hideLoadingIndicator() {
         activityIndicator.isHidden = true
         activityIndicator.stopAnimating()
     }
     
-     func showNetworkError(message: String) {
+    func showNetworkError(message: String) {
         hideLoadingIndicator()
         
         alert.showAlert(in: self, with: AlertModel(

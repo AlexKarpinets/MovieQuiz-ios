@@ -1,32 +1,40 @@
 import UIKit
 
 final class MovieQuizPresenter: QuestionFactoryDelegate {
-    let questionsAmount = 10
+    private let questionsAmount = 10
     private var currentQuestionIndex = 0
-    var currentQuestion: QuizQuestion?
+    private var currentQuestion: QuizQuestion?
     private weak var viewController: MovieQuizViewController?
-     var correctAnswers = 0
-     private var questionFactory: QuestionFactoryProtocol?
+    private var questionFactory: QuestionFactoryProtocol?
     private var statisticService: StatisticService!
     private var alert = ResultAlertPresenter()
+    var correctAnswers = 0
     
     init(viewController: MovieQuizViewController) {
-          self.viewController = viewController
+        self.viewController = viewController
         statisticService = StatisticServiceImplementation()
-          questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
-          questionFactory?.loadData()
-          viewController.showLoadingIndicator()
-      }
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+        questionFactory?.loadData()
+        viewController.showLoadingIndicator()
+    }
     
+    
+    private func didAnswer(isYes: Bool) {
+        guard let currentQuestion = currentQuestion else {
+            return
+        }
+        let givenAnswer = isYes
+        viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    }
     func didLoadDataFromServer() {
-           viewController?.hideLoadingIndicator()
-           questionFactory?.requestNextQuestion()
-       }
-       
-       func didFailToLoadData(with error: Error) {
-           let message = error.localizedDescription
-           viewController?.showNetworkError(message: message)
-       }
+        viewController?.hideLoadingIndicator()
+        questionFactory?.requestNextQuestion()
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        let message = error.localizedDescription
+        viewController?.showNetworkError(message: message)
+    }
     
     func convert(model: QuizQuestion) -> QuizStepViewModel {
         QuizStepViewModel(
@@ -55,14 +63,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         didAnswer(isYes: false)
     }
     
-    private func didAnswer(isYes: Bool) {
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-        let givenAnswer = isYes
-        viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
-    }
-    
     func didRecieveNextQuestion(question: QuizQuestion?) {
         guard let question else {
             return
@@ -75,12 +75,12 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         viewController?.show(quiz: viewModel)
     }
     
-     func showNextQuestionResults() {
+    func proceedToNextQuestionOrResults() {
         if self.isLastQuestion() {
             guard let statisticService else { return }
             statisticService.store(correct: correctAnswers, total: self.questionsAmount)
             guard let viewController else { return }
-           alert.showAlert(
+            alert.showAlert(
                 in: viewController, with: AlertModel(
                     title: "Этот раунд окончен!",
                     message: """
@@ -98,9 +98,26 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
-     func reset() {
+    func reset() {
         self.resetQuestionIndex()
         correctAnswers = 0
         questionFactory?.requestNextQuestion()
     }
+    
+//    func proceedWithAnswer(isCorrect: Bool) {
+//        didAnswer(isCorrectAnswer: isCorrect)
+//
+//        viewController?.highlightImageBorder(isCorrectAnswer: isCorrect)
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+//            guard let self = self else { return }
+//            self.proceedToNextQuestionOrResults()
+//        }
+//    }
+//
+//    func didAnswer(isCorrectAnswer: Bool) {
+//        if isCorrectAnswer {
+//            correctAnswers += 1
+//        }
+//    }
 }
