@@ -1,10 +1,32 @@
 import UIKit
 
-final class MovieQuizPresenter {
+final class MovieQuizPresenter: QuestionFactoryDelegate {
     let questionsAmount = 10
     private var currentQuestionIndex = 0
     var currentQuestion: QuizQuestion?
-    weak var viewController: MovieQuizViewController?
+    private weak var viewController: MovieQuizViewController?
+     var correctAnswers = 0
+     private var questionFactory: QuestionFactoryProtocol?
+    private var statisticService: StatisticService!
+    private var alert = ResultAlertPresenter()
+    
+    init(viewController: MovieQuizViewController) {
+          self.viewController = viewController
+        statisticService = StatisticServiceImplementation()
+          questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+          questionFactory?.loadData()
+          viewController.showLoadingIndicator()
+      }
+    
+    func didLoadDataFromServer() {
+           viewController?.hideLoadingIndicator()
+           questionFactory?.requestNextQuestion()
+       }
+       
+       func didFailToLoadData(with error: Error) {
+           let message = error.localizedDescription
+           viewController?.showNetworkError(message: message)
+       }
     
     func convert(model: QuizQuestion) -> QuizStepViewModel {
         QuizStepViewModel(
@@ -51,5 +73,34 @@ final class MovieQuizPresenter {
             self?.viewController?.show(quiz: viewModel)
         }
         viewController?.show(quiz: viewModel)
+    }
+    
+     func showNextQuestionResults() {
+        if self.isLastQuestion() {
+            guard let statisticService else { return }
+            statisticService.store(correct: correctAnswers, total: self.questionsAmount)
+            guard let viewController else { return }
+           alert.showAlert(
+                in: viewController, with: AlertModel(
+                    title: "Этот раунд окончен!",
+                    message: """
+                                                                Ваш результат: \(correctAnswers) из \(self.questionsAmount)
+                                                                Количество сыгранных квизов: \(statisticService.gamesCount)
+                                                                Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) (\(statisticService.bestGame.date.dateTimeString))
+                                                                Средняя точность: \("\(String(format: "%.2f", statisticService.totalAccuracy))%")
+                                                                """,
+                    buttonText: "Сыграть ещё раз", completion: { [weak self] _ in
+                        self?.reset()
+                    }))
+        } else {
+            self.switchToNextQuestion()
+            questionFactory?.requestNextQuestion()
+        }
+    }
+    
+     func reset() {
+        self.resetQuestionIndex()
+        correctAnswers = 0
+        questionFactory?.requestNextQuestion()
     }
 }
