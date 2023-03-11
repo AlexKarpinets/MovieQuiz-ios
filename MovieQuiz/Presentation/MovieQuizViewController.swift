@@ -21,6 +21,10 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         presenter = MovieQuizPresenter(viewController: self)
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     // MARK: - Func
     
     func setup() {
@@ -52,12 +56,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
             self.presenter.proceedToNextQuestionOrResults()
         }
     }
-    
-    //    func highlightImageBorder(isCorrectAnswer: Bool) {
-    //        imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-    //    }
-    
-    
+
     func showLoadingIndicator() {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()

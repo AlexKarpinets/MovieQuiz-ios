@@ -25,14 +25,14 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
 final class MovieQuizPresenterTests: XCTestCase {
     func testPresenterConvertModel() throws {
         let viewControllerMock = MovieQuizViewControllerMock()
-        let sut = MovieQuizPresenter(viewController: viewControllerMock) // почему то вызывает ошибку несоответствия типа, код взят из учебника практикума
+        let sut = MovieQuizPresenter(viewController: viewControllerMock)
         
         let emptyData = Data()
         let question = QuizQuestion(image: emptyData, correctAnswer: true)
         let viewModel = sut.convert(model: question)
         
         XCTAssertNotNil(viewModel.image)
-        XCTAssertEqual(viewModel.question, "Question Text")
+        XCTAssertEqual(viewModel.question, "Рейтинг этого фильма больше чем 6?")
         XCTAssertEqual(viewModel.questionNumber, "1/10")
     }
 }

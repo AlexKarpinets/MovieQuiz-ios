@@ -33,9 +33,10 @@
 		FABC0491299AA88C00DF9C5E /* MoviesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABC0490299AA88C00DF9C5E /* MoviesLoader.swift */; };
 		FAC5FAD629B6360A00D90EFA /* MovieQuizPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC5FAD529B6360A00D90EFA /* MovieQuizPresenter.swift */; };
 		FACBBD6629AFA23E004076C9 /* MovieQuizUiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACBBD6529AFA23E004076C9 /* MovieQuizUiTests.swift */; };
-		FADC383F29696D23001F091A /* MovieQuizFonts in Resources */ = {isa = PBXBuildFile; fileRef = FADC383E29696D23001F091A /* MovieQuizFonts */; };
 		FAE64189298EAC8300721BBC /* StatisticService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE64188298EAC8300721BBC /* StatisticService.swift */; };
 		FAE6418B298EB21D00721BBC /* GameRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE6418A298EB21D00721BBC /* GameRecord.swift */; };
+		FAF8C02029BC861A008D25C0 /* YS Display-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF8C01E29BC85B5008D25C0 /* YS Display-Bold.ttf */; };
+		FAF8C02129BC8620008D25C0 /* YS Display-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF8C01F29BC85B5008D25C0 /* YS Display-Medium.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,9 +112,10 @@
 		FACBBD6529AFA23E004076C9 /* MovieQuizUiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuizUiTests.swift; sourceTree = "<group>"; };
 		FAD4363C29A8E75D007F5F8A /* MovieQuizTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieQuizTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD4364929A8EE5F007F5F8A /* ArrayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArrayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		FADC383E29696D23001F091A /* MovieQuizFonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MovieQuizFonts; sourceTree = "<group>"; };
 		FAE64188298EAC8300721BBC /* StatisticService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticService.swift; sourceTree = "<group>"; };
 		FAE6418A298EB21D00721BBC /* GameRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRecord.swift; sourceTree = "<group>"; };
+		FAF8C01E29BC85B5008D25C0 /* YS Display-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Bold.ttf"; sourceTree = "<group>"; };
+		FAF8C01F29BC85B5008D25C0 /* YS Display-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Medium.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,10 +178,11 @@
 		8F4738332848DE46005DF65E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FAF8C01E29BC85B5008D25C0 /* YS Display-Bold.ttf */,
+				FAF8C01F29BC85B5008D25C0 /* YS Display-Medium.ttf */,
 				AD1ABABC2831907F00B3E448 /* LaunchScreen.storyboard */,
 				AD1ABABA2831907F00B3E448 /* Assets.xcassets */,
 				AD1ABABF2831907F00B3E448 /* Info.plist */,
-				FADC383E29696D23001F091A /* MovieQuizFonts */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -455,7 +458,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD1ABABE2831907F00B3E448 /* LaunchScreen.storyboard in Resources */,
-				FADC383F29696D23001F091A /* MovieQuizFonts in Resources */,
+				FAF8C02129BC8620008D25C0 /* YS Display-Medium.ttf in Resources */,
+				FAF8C02029BC861A008D25C0 /* YS Display-Bold.ttf in Resources */,
 				AD1ABABB2831907F00B3E448 /* Assets.xcassets in Resources */,
 				AD1ABAB92831907B00B3E448 /* Main.storyboard in Resources */,
 			);
@@ -765,6 +769,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -796,6 +801,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

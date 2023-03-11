@@ -4,13 +4,13 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     private let questionsAmount = 10
     private var currentQuestionIndex = 0
     private var currentQuestion: QuizQuestion?
-    private weak var viewController: MovieQuizViewController?
+    private weak var viewController: MovieQuizViewControllerProtocol?
     private var questionFactory: QuestionFactoryProtocol?
     private var statisticService: StatisticService!
     private var alert = ResultAlertPresenter()
     var correctAnswers = 0
     
-    init(viewController: MovieQuizViewController) {
+    init(viewController: MovieQuizViewControllerProtocol) {
         self.viewController = viewController
         statisticService = StatisticServiceImplementation()
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
@@ -79,7 +79,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         if self.isLastQuestion() {
             guard let statisticService else { return }
             statisticService.store(correct: correctAnswers, total: self.questionsAmount)
-            guard let viewController else { return }
+            guard let viewController = viewController as? UIViewController else { return }
             alert.showAlert(
                 in: viewController, with: AlertModel(
                     title: "Этот раунд окончен!",
@@ -103,21 +103,4 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         correctAnswers = 0
         questionFactory?.requestNextQuestion()
     }
-    
-//    func proceedWithAnswer(isCorrect: Bool) {
-//        didAnswer(isCorrectAnswer: isCorrect)
-//
-//        viewController?.highlightImageBorder(isCorrectAnswer: isCorrect)
-//
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-//            guard let self = self else { return }
-//            self.proceedToNextQuestionOrResults()
-//        }
-//    }
-//
-//    func didAnswer(isCorrectAnswer: Bool) {
-//        if isCorrectAnswer {
-//            correctAnswers += 1
-//        }
-//    }
 }
