@@ -14,6 +14,7 @@ final class ResultAlertPresenter {
         
         alert.addAction(action)
         vc.present(alert, animated: true)
+        alert.view.accessibilityIdentifier = "Alert"
     }
 }
 
